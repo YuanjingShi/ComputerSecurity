@@ -1,5 +1,5 @@
 <?php
-
+session_start ();
 if (isset ( $_GET ['logout'] )) {
 
     // Simple exit message
@@ -8,7 +8,7 @@ if (isset ( $_GET ['logout'] )) {
     fclose ( $fp );
 
     session_destroy ();
-    header ( "Location: index.php" ); // Redirect the user
+    header ( "Location: login.php" ); // Redirect the user
 }
 
 ?>
@@ -16,14 +16,9 @@ if (isset ( $_GET ['logout'] )) {
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Chat - Customer Module</title>
+<title>InstantMessage</title>
 </head>
 <body>
-    <?php
-    if (! isset ( $_SESSION ['name'] )) {
-        loginForm ();
-    } else {
-        ?>
 <div id="wrapper">
         <div id="menu">
             <p class="welcome">
@@ -94,9 +89,6 @@ if (isset ( $_GET ['logout'] )) {
 
         setInterval (loadLog, 1000);
     </script>
-<?php
-    }
-    ?>
     <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
     <script type="text/javascript"></script>

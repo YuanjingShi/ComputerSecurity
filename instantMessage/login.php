@@ -1,5 +1,9 @@
 <?php
 session_start ();
+$options = [
+  'cost' => 11,
+  //'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+  ];
 $file = "user.txt";
 $fopen = fopen ( $file, "r");
 
@@ -7,28 +11,35 @@ if ($fopen) {
     $text = explode("\n", fread($fopen, filesize($file)));
 }
 fclose($fopen);
+$count = count($text);
+$_SESSION['array'] = array();
+for($i=0;$i<5;$i++){
+    list($user,$pwd) = explode(" ", $text[$i]);
+    $_SESSION['array'][$user] = $pwd;
+}
 //echo in_array(henry,$text,true) ? 'It is here' : 'Sorry it is not';
-
+//print_r($text);
+print_r($_SESSION['array']);
 
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['name'] != "" && $_POST ['pwd'] != "") {
         $_SESSION ['name'] = stripslashes ( htmlspecialchars ( $_POST ['name'] ) );
         $_SESSION ['pwd'] = stripslashes ( htmlspecialchars ( $_POST ['pwd'] ) );
         //echo $_POST ['name'];
-        if(in_array($_SESSION ['name'], $text,true)){
-            $fp = fopen ( "log.html", 'a' );
-            fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
-            fclose ( $fp );
+        if(in_array($_SESSION ['name'], $_SESSION['array'])){
+            header("Location: checkLogin.php");
         }else{
             //echo '<span class="error">User is not registered!</span>';
             $fp1 = fopen ( $file, 'a' );
-            fwrite ($fp1, $_SESSION ['name']."\n");
+            $temp = password_hash($_SESSION ['pwd'], PASSWORD_BCRYPT, $options);
+            fwrite ($fp1, $_SESSION ['name']." ".$temp."\n");
             fclose ( $fp1 );
             $fp = fopen ( "log.html", 'a' );
             fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
             fclose ( $fp );
+            header("Location: index.php");
         }
-        header("Location: index.php");
+
     } else {
         echo '<span class="error">Please input sth valid</span>';
     }

@@ -19,10 +19,16 @@ if (isset ( $_POST ['enter'] )) {
             $fp = fopen ( "log.html", 'a' );
             fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
             fclose ( $fp );
-            header("Location: index.php");
         }else{
-            echo '<span class="error">User is not registered!</span>';
+            //echo '<span class="error">User is not registered!</span>';
+            $fp1 = fopen ( $file, 'a' );
+            fwrite ($fp1, $_SESSION ['name']."\n");
+            fclose ( $fp1 );
+            $fp = fopen ( "log.html", 'a' );
+            fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
+            fclose ( $fp );
         }
+        header("Location: index.php");
     } else {
         echo '<span class="error">Please input sth valid</span>';
     }

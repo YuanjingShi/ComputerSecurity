@@ -13,20 +13,25 @@ if ($fopen) {
 fclose($fopen);
 $count = count($text);
 $_SESSION['array'] = array();
-for($i=0;$i<5;$i++){
+$_SESSION['user'] = array();
+for($i=0;$i<$count;$i++){
     list($user,$pwd) = explode(" ", $text[$i]);
+    $_SESSION['user'][] = $user;
     $_SESSION['array'][$user] = $pwd;
 }
 //echo in_array(henry,$text,true) ? 'It is here' : 'Sorry it is not';
-//print_r($text);
-print_r($_SESSION['array']);
+//print_r($_SESSION['user']);
+//print_r($_SESSION['array']["henry"]);
+
+
 
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['name'] != "" && $_POST ['pwd'] != "") {
         $_SESSION ['name'] = stripslashes ( htmlspecialchars ( $_POST ['name'] ) );
         $_SESSION ['pwd'] = stripslashes ( htmlspecialchars ( $_POST ['pwd'] ) );
         //echo $_POST ['name'];
-        if(in_array($_SESSION ['name'], $_SESSION['array'])){
+        if(in_array($_SESSION ['name'], $_SESSION['user'])){
+            //echo $_SESSION['array'][$_SESSION['name']];
             header("Location: checkLogin.php");
         }else{
             //echo '<span class="error">User is not registered!</span>';

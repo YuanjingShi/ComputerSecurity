@@ -31,8 +31,15 @@ if (isset ( $_POST ['enter'] )) {
         $_SESSION ['pwd'] = stripslashes ( htmlspecialchars ( $_POST ['pwd'] ) );
         //echo $_POST ['name'];
         if(in_array($_SESSION ['name'], $_SESSION['user'])){
-            //echo $_SESSION['array'][$_SESSION['name']];
-            header("Location: checkLogin.php");
+            if(password_verify ($_SESSION['pwd'], $_SESSION['array'][$_SESSION['name']])){
+                $fp = fopen ( "log.html", 'a' );
+                fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
+                fclose ( $fp );
+                header("Location: index.php");
+            }else{
+                session_destroy ();
+                header("Location: login.php?logfail=true");
+            }
         }else{
             //echo '<span class="error">User is not registered!</span>';
             $fp1 = fopen ( $file, 'a' );

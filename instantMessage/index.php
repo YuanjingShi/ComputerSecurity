@@ -1,29 +1,27 @@
 <?php
 session_start ();
+$username = $_SESSION["username"];
 if (isset ( $_GET ['logout'] )) {
 
     // Simple exit message
     $fp = fopen ( "log.html", 'a' );
-    fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has left the chat session.</i><br></div>" );
+    fwrite ( $fp, "<div class='msgln'><i>User " . $username . " has left the chat session.</i><br></div>" );
     fclose ( $fp );
 
     session_destroy ();
     header ( "Location: login.php" ); // Redirect the user
 }
 
-if (isset($_POST["targetGroup"])) 
+if (isset($_SESSION["grpid"]))
 {
-    echo "targetUser: ".$_POST["targetGroup"]."\n";
+    $grpid=$_SESSION["grpid"];
     $targetGroup = $_POST["targetGroup"];
-    $data = json_decode(file_get_contents("log.json"), true);
 
-    if (!$data) echo "internal error"; // server parse error
-    $groups = $data["groups"];
+    $groups = json_decode(file_get_contents("groups.json"), true);
+    if (!$groups) die("Internal error"); // server parse error
 
-    foreach ($groups as $group)
-    {
-        print_r($group);
-    }
+    if (!array_key_exists($grpid, $groups) || !in_array($username, $groups[$grpid]["users"]))
+        header("Location: login.php"); // user not in group or group not exists
 
 }
 else {
@@ -42,7 +40,7 @@ else {
 <div id="wrapper">
         <div id="menu">
             <p class="welcome">
-                Welcome, <b><?php echo $_SESSION['name']; ?></b>
+                Welcome, <b><?php echo $username; ?></b>
             </p>
             <p class="logout">
                 <a id="exit" href="#">Exit Chat</a>
@@ -50,19 +48,58 @@ else {
             <div style="clear: both"></div>
         </div>
         <div id="chatbox"><?php
-        if (file_exists ( "log.html" ) && filesize ( "log.html" ) > 0) {
-            $handle = fopen ( "log.html", "r" );
-            $contents = fread ( $handle, filesize ( "log.html" ) );
-            fclose ( $handle );
+            $grp = $groups[$grpid];
+            $msgs = $grp["msgs"];
 
-            echo $contents;
-        }
-        ?></div>
+            foreach ($msgs as $msg)
+            {
 
-        <form name="message" action="">
-            <input name="usermsg" type="text" id="usermsg" size="63" /> <input
-                name="submitmsg" type="submit" id="submitmsg" value="Send" />
-        </form>
+                $user = $msg["user"];
+                $time = $msg["time"];
+
+                switch ($msg["type"])
+                {
+                    case "user_join":
+                    echo "
+                    <div class='msgln'>
+                        <span class='msgln'>($time)</span>
+                        <i>User <b>$user</b> has joined the chat session.</i>
+                    </div>
+                    <br>
+                    ";
+                    break;
+
+                    case "user_leave":
+                    echo "
+                    <div class='msgln'>
+                        <span class='msgln'>($time)</span>
+                        <i>User <b>$user</b> has left the chat session.</i>
+                    </div>
+                    <br>
+                    ";
+                    break;
+
+                    case "user_say":
+                    echo "
+                    <div>
+                        <span class='msgln'>($time)</span>
+                        <b>$user</b>:".$msg['msg']."
+                    </div>
+                    <br>
+                    ";
+                    break;
+                }
+
+            }
+
+
+        ?>
+            
+        </div>
+
+        <input name="usermsg" type="text" id="usermsg" size="63" autocomplete="off" /> 
+        <input type="hidden" name="type" value="user_say" />
+        <button name="submitmsg" id="submitmsg" >Send</button>
     </div>
     <div id="map" style="width:400px;height:400px;"></div>
     <script type="text/javascript"
@@ -83,20 +120,20 @@ else {
 
         //If user submits the form
         $("#submitmsg").click(function(){
-                var clientmsg = $("#usermsg").val();
-                $.post("post.php", {text: clientmsg});
-                $("#usermsg").attr("value", "");
-                loadLog;
-                return false;
-            });
+            var clientmsg = $("#usermsg").val();
+            $.post("post.php", {text: clientmsg});
+            $("#usermsg").attr("value", "");
+            return false;
+        });
 
         function loadLog(){
             var oldscrollHeight = $("#chatbox").attr("scrollHeight") - 20; //Scroll height before the request
             $.ajax({
-                url: "log.html",
-                cache: false,
-                success: function(html){
-                    $("#chatbox").html(html); //Insert chat log into the #chatbox div
+                url: "groups.json",
+                dataType: "json",
+                success: function(data){
+                    console.log(data);
+                    // $("#chatbox").html(html); //Insert chat log into the #chatbox div
 
                 //Auto-scroll
                 var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20; //Scroll height after the request

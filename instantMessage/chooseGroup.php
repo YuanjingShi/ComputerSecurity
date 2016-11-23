@@ -5,11 +5,27 @@ if (isset ( $_GET ['logout'] )) {
     header("Location: login.php");
 }
 
-if (isset ($_POST["chosen"]))
+if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 {
-    header("Location: index.php");
+    $grpid = $_POST["targetGroup"];
+    $groups = json_decode(file_get_contents("groups.json"), true);
+    if (!$groups) die("Internal error");
+
+    $grp = $groups[$grpid];
+    if (!array_key_exists($grpid, $groups) || !in_array($_SESSION["username"], $grp["users"])) 
+    {
+        echo $_SESSION["username"];
+        print_r($_SESSION);
+        echo "<span class='error'>The group does not exist,<br> or you are not in the group</span>";
+    }
+    else 
+    {
+        $_SESSION["grpid"] = $grpid;
+        header("Location: index.php");
+    }
 }
 
+print_r ($_COOKIE);
 ?>
 
 <!DOCTYPE HTML>
@@ -18,13 +34,10 @@ if (isset ($_POST["chosen"]))
         <link rel="stylesheet" href="style.css" media="screen">
     </head>   
     <body>
-        <?php 
-            if ($_SESSION["not_in_group"] === true) echo "You are not in the group\n";
-        ?>
         <form method="post">
             <label for="targetGroup">Please enter the group ID: </label>
             <br>
-            <input name="targetGroup" type="text">
+            <input name="targetGroup" type="text" autocomplete="off" />
             <button name="chosen" value="chosen" type="submit">Submit</button>
         </form>
     </body>

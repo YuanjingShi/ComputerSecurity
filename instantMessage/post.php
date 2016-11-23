@@ -1,13 +1,21 @@
 <?php
 session_start();
-if(isset($_SESSION['name'])){
-    $text = $_POST['text'];
-     
-    $fp = fopen("log.html", 'a');
-    fwrite($fp, "<div class='msgln'>(".date("g:i A").")
-    <b>".$_SESSION['name']."
-    </b>: ".stripslashes(htmlspecialchars($text))."
-    <br></div>");
+date_default_timezone_set('Asia/Hong_Kong');
+if(isset($_SESSION['username'])){
+
+    $groups = json_decode(file_get_contents("groups.json"), true);
+    if (!$groups) die("internal error");
+
+    $text = $_POST["text"];
+    $msg = array();
+    $msg["msg"] = $text;
+    $msg["user"] = $_SESSION["username"];
+    $msg["time"] = (new DateTime())->format('H:i:s');
+    $msg["type"] = "user_say";
+    array_push($groups[$_SESSION["grpid"]]["msgs"], $msg);
+
+    $fp = fopen("groups.json", "w") or die("internal error");
+    fwrite($fp, json_encode($groups));
     fclose($fp);
 }
 ?>

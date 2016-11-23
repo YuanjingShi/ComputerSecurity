@@ -1,0 +1,1 @@
+{"1234567":{"msgs":[{"type":"user_join","user":"a","time":"3:19:00"},{"type":"user_say","user":"a","msg":"dsaf","time":"3:20:00"},{"type":"user_leave","user":"a","time":"3:21:00"},{"msg":"adsfsadf","user":"a","time":"02:10:50","type":"user_say"},{"msg":"somewhere","user":"c","time":"02:13:28","type":"user_say"}],"users":["a","c"]}}

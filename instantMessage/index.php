@@ -1,5 +1,6 @@
 <?php
 session_start ();
+echo $_POST["targetUser"];
 if (isset ( $_GET ['logout'] )) {
 
     // Simple exit message

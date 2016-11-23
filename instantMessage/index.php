@@ -1,6 +1,5 @@
 <?php
 session_start ();
-echo $_POST["targetUser"];
 if (isset ( $_GET ['logout'] )) {
 
     // Simple exit message
@@ -10,6 +9,28 @@ if (isset ( $_GET ['logout'] )) {
 
     session_destroy ();
     header ( "Location: login.php" ); // Redirect the user
+}
+
+if (isset($_POST["targetUser"]))
+{
+    echo "targetUser: ".$_POST["targetUser"];
+    $targetUser = $_POST["targetUser"];
+    if (file_exists("log.json"))
+    $data = json_decode(file_get_contents("log.json"), true);
+
+    if (!$data) echo "internal error"; // server parse error
+    $groups = $data["groups"];
+
+    foreach ($groups as $group)
+    {
+        print_r($group);
+
+    }
+
+}
+else {
+    session_destroy();
+    header("Location: login.php");
 }
 
 ?>

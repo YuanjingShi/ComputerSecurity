@@ -37,8 +37,7 @@ if (isset ( $_POST ['enter'] )) {
                 fclose ( $fp );
                 header("Location: chooseUser.php");
             }else{
-                session_destroy ();
-                header("Location: login.php?logfail=true");
+                echo '<span class="error">Your username/password is not correct!</span>';
             }
         }else{
             //echo '<span class="error">User is not registered!</span>';
@@ -49,7 +48,7 @@ if (isset ( $_POST ['enter'] )) {
             $fp = fopen ( "log.html", 'a' );
             fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
             fclose ( $fp );
-            header("Location: index.php");
+            header("Location: chooseUser.php");
         }
 
     } else {

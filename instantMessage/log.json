@@ -6,27 +6,24 @@
             "msg": [
                 {
                     "type": "user_join",
-                    "user": "zhou",
+                    "user": "z",
                     "time": "3:19:00"
                 },
                 {
                     "type": "user_say",
-                    "user": "zhou",
+                    "user": "z",
                     "msg": "dsaf",
                     "time": "3:20:00"
                 },
                 {
                     "type": "user_leave",
-                    "user": "zhou",
+                    "user": "z",
                     "time": "3:21:00"
                 }
             ],
             "users": [
-                "zhao", 
-                "qian",
-                "sun",
-                "li",
-                "zhou"
+                "a",
+                "z"
             ]
 
         }

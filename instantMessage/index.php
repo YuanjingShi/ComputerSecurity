@@ -11,11 +11,10 @@ if (isset ( $_GET ['logout'] )) {
     header ( "Location: login.php" ); // Redirect the user
 }
 
-if (isset($_POST["targetUser"]))
+if (isset($_POST["targetGroup"])) 
 {
-    echo "targetUser: ".$_POST["targetUser"];
-    $targetUser = $_POST["targetUser"];
-    if (file_exists("log.json"))
+    echo "targetUser: ".$_POST["targetGroup"]."\n";
+    $targetGroup = $_POST["targetGroup"];
     $data = json_decode(file_get_contents("log.json"), true);
 
     if (!$data) echo "internal error"; // server parse error
@@ -24,7 +23,6 @@ if (isset($_POST["targetUser"]))
     foreach ($groups as $group)
     {
         print_r($group);
-
     }
 
 }

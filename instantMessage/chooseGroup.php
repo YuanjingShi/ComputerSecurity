@@ -9,6 +9,7 @@ if (isset ($_POST["chosen"]))
 {
     header("Location: index.php");
 }
+
 ?>
 
 <!DOCTYPE HTML>
@@ -17,10 +18,13 @@ if (isset ($_POST["chosen"]))
         <link rel="stylesheet" href="style.css" media="screen">
     </head>   
     <body>
-        <form action="index.php" method="post">
-            <label for="targetUser">Please choose a user with whom you want to chat: </label>
+        <?php 
+            if ($_SESSION["not_in_group"] === true) echo "You are not in the group\n";
+        ?>
+        <form method="post">
+            <label for="targetGroup">Please enter the group ID: </label>
             <br>
-            <input name="targetUser" type="text">
+            <input name="targetGroup" type="text">
             <button name="chosen" value="chosen" type="submit">Submit</button>
         </form>
     </body>

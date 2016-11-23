@@ -37,8 +37,7 @@ if (isset ( $_POST ['enter'] )) {
                 fclose ( $fp );
                 header("Location: chooseUser.php");
             }else{
-                session_destroy ();
-                header("Location: login.php?logfail=true");
+                echo '<span class="error">Your username/password is not correct!</span>';
             }
         }else{
             //echo '<span class="error">User is not registered!</span>';

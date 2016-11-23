@@ -49,7 +49,7 @@ if (isset ( $_POST ['enter'] )) {
             $fp = fopen ( "log.html", 'a' );
             fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
             fclose ( $fp );
-            header("Location: index.php");
+            header("Location: chooseUser.php");
         }
 
     } else {

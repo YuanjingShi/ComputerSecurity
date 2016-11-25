@@ -31,6 +31,7 @@ if (isset ( $_POST ['create'] )) {
     do{
         $grpid = rand(1000000,9999999);
     }while ($groups[$grpid]);
+    $_SESSION["grpid"] = $grpid;
         
     //generate the group id and push it into group array
     $groups[$grpid] = array();
@@ -46,14 +47,13 @@ if (isset ( $_POST ['create'] )) {
     $msg["user"] = $_SESSION["username"];
     $msg["time"] = (new DateTime())->format('H:i:s');
     $msg["type"] = "user_create";
-    array_push($groups[$_SESSION["grpid"]]["msgs"], $msg);
+    array_push($groups[$grpid]["msgs"], $msg);
     
     //write the updated group info back to the json
     $fp = fopen("groups.json", "w") or die("internal error");
     fwrite($fp, json_encode($groups));
     fclose($fp);
     
-    $_SESSION["grpid"] = $grpid;
     header("Location: index.php");
 }
 

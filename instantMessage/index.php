@@ -103,14 +103,14 @@ else {
                             html = `
                             <div class='msgln'>
                                 <span class='msgln'>(`+msg.time+`)</span>
-                                <i>User <b>`+msg.user+`</b> has joined the chat session.</i>
+                                <i>User <b>`+msg.user+`</b> created the chat session.</i>
                             </div>
                             <br>
                             `;
                             html = `
                             <div class='msgln'>
                                 <span class='msgln'>(`+msg.time+`)</span>
-                                <i>User <b>`+msg.user+`</b> has joined the chat session.</i>
+                                <i>User <b>`+msg.user+`</b> joined the chat session.</i>
                             </div>
                             <br>
                             `;
@@ -118,7 +118,7 @@ else {
                             html = `
                             <div class='msgln'>
                                 <span class='msgln'>(`+msg.time+`)</span>
-                                <i>User <b>`+msg.user+`</b> has joined the chat session.</i>
+                                <i>User <b>`+msg.user+`</b> joined the chat session.</i>
                             </div>
                             <br>
                             `;
@@ -127,7 +127,7 @@ else {
                             case "user_leave":
                             html = `
                             <div class='msgln'> <span class='msgln'>(`+msg.time+`)</span>
-                                <i>User <b>`+msg.user+`</b> has left the chat session.</i>
+                                <i>User <b>`+msg.user+`</b> left the chat session.</i>
                             </div>
                             <br>
                             `;

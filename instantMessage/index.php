@@ -83,7 +83,7 @@ else {
             var oldscrollHeight = $("#chatbox").attr("scrollHeight") - 20; //Scroll height before the request
             console.log(msg_no);
             $.ajax({
-                method: "POST",
+                type: "POST",
                 url: "checkMessage.php",
                 data: {"msg_no": msg_no},
                 success: function(data)

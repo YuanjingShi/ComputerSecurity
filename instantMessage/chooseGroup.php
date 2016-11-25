@@ -14,8 +14,6 @@ if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
     $grp = $groups[$grpid];
     if (!array_key_exists($grpid, $groups) || !in_array($_SESSION["username"], $grp["users"])) 
     {
-        echo $_SESSION["username"];
-        print_r($_SESSION);
         echo "<span class='error'>The group does not exist,<br> or you are not in the group</span>";
     }
     else 

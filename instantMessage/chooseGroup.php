@@ -26,7 +26,36 @@ if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 }
 
 if (isset ( $_POST ['create'] )) {
+    $groups = json_decode(file_get_contents("groups.json"), true);
+    if (!$groups) die("internal error");
+        
+    do{
+        $grpid = rand(1000000,9999999);
+    }while ($groups[$grpid]);
+        
+    //generate the group id and push it into group array
+    $groups[$grpid] = array();
+    $msgArray = array();
+    $userArray = array($_SESSION["username"]);
     
+    //initialize the message array and user array 
+    $groups[$grpid]["msgs"] = $msgArray;
+    $groups[$grpid]["users"] = $userArray;
+    
+    //initialize the user create message in msg array
+    $msg = array();
+    $msg["user"] = $_SESSION["username"];
+    $msg["time"] = (new DateTime())->format('H:i:s');
+    $msg["type"] = "user_create";
+    array_push($groups[$_SESSION["grpid"]]["msgs"], $msg);
+    
+    //write the updated group info back to the json
+    $fp = fopen("groups.json", "w") or die("internal error");
+    fwrite($fp, json_encode($groups));
+    fclose($fp);
+    
+    $_SESSION["grpid"] = $grpid;
+    header("Location: index.php");
 }
 
 //print_r ($_COOKIE);

@@ -99,6 +99,21 @@ else {
                         msg = msgs[i];
                         switch (msg.type)
                         {
+                            case "user_create":      
+                            html = `
+                            <div class='msgln'>
+                                <span class='msgln'>(`+msg.time+`)</span>
+                                <i>User <b>`+msg.user+`</b> has joined the chat session.</i>
+                            </div>
+                            <br>
+                            `;
+                            html = `
+                            <div class='msgln'>
+                                <span class='msgln'>(`+msg.time+`)</span>
+                                <i>User <b>`+msg.user+`</b> has joined the chat session.</i>
+                            </div>
+                            <br>
+                            `;
                             case "user_join":
                             html = `
                             <div class='msgln'>

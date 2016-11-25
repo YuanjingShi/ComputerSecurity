@@ -1,9 +1,4 @@
 <?php
-$options = [
-  'cost' => 11,
-  //'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
-];
-
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['username'] != "" && $_POST ['pwd'] != "") {
         $user_data = json_decode(file_get_contents("user.json"), true);
@@ -25,21 +20,7 @@ if (isset ( $_POST ['enter'] )) {
                 session_destroy();
             }
         }else{
-            //echo '<span class="error">User is not registered!</span>';
-
-            $temp = password_hash($pwd, PASSWORD_BCRYPT, $options);
-            $new_user = array();
-            $new_user["pwd"] = $temp;
-            $user_data[$username] = $new_user; 
-            // initialize new user like "username": {"pwd": "eoj3irJKE23%j43lkj"}
-
-            $fp = fopen("user.json", "w") or die("internal error");
-            fwrite($fp, json_encode($user_data)); // override database
-            fclose($fp);
-            $fp = fopen ( "log.html", 'a' );
-            fwrite ( $fp, "<div class='msgln'><i>User " . $username . " has joined the chat session.</i><br></div>" );
-            fclose ( $fp );
-            header("Location: chooseGroup.php");
+            echo '<span class="error">User is not registered!</span>';
         }
 
     } else {
@@ -63,5 +44,6 @@ if (isset ( $_POST ['enter'] )) {
                 <input type="submit" name="enter" id="enter" value="Enter" autocomplete="off" />
             </form>
         </div>
+		<p>New User? <a href="./register.php">Click here to register!</a></p>
     </body>
     </html>

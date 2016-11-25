@@ -9,15 +9,26 @@ if (isset ( $_POST ['enter'] )) {
         $pwd = stripslashes(htmlspecialchars($_POST['pwd']));
         $_SESSION['pwd'] = $pwd;
         //echo $_POST ['name'];
+		if(!isset($_SESSION['wrong_pw_counter']))
+			$_SESSION['wrong_pw_counter'] = 0;
         if(array_key_exists($username, $user_data)){
             if(password_verify ($pwd, $user_data[$username]["pwd"])){
+				$_SESSION['username'] = $username;
+				$_SESSION['pwd'] = $pwd;
                 $fp = fopen("log.html", 'a' );
                 fwrite($fp, "<div class='msgln'><i>User " . $username . " has joined the chat session.</i><br></div>" );
                 fclose ($fp);
                 header("Location: chooseGroup.php");
             }else{
                 echo '<span class="error">Your username/password is not correct!</span>';
-                session_destroy();
+				if((++$_SESSION['wrong_pw_counter'])%3==0){
+					echo "<br><span class='error'>3 x wrong password, try again in 15s!</span>";
+					//stay in an idle state for 15 seconds for anti-brute-forcing
+					ob_flush();
+					flush();
+					sleep(15);
+				//removed session_destroy();
+				}
             }
         }else{
             echo '<span class="error">User is not registered!</span>';
@@ -46,4 +57,4 @@ if (isset ( $_POST ['enter'] )) {
         </div>
 		<p>New User? <a href="./register.php">Click here to register!</a></p>
     </body>
-    </html>
+ </html>

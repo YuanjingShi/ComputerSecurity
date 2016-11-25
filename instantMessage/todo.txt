@@ -1,4 +1,3 @@
 password anti brute force
-registration
 group
 database encryption

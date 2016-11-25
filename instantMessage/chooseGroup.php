@@ -78,15 +78,16 @@ if (isset ( $_POST ['create'] )) {
             <?php
                 $groups = json_decode(file_get_contents("groups.json"), true);
                 if (!$groups) die("Internal error");
-                
+                //print_r($_SESSION["username"]);
                 foreach (array_keys($groups) as $key){
-                    if(in_array($_SESSION["username"], $groups[$key]["users"]))
+                    if(in_array($_SESSION["username"], $groups[$key]["users"])){
                         print_r($key." "."got users: "."<br>");
                         //print the user name in this group
                         foreach (array_values($groups[$key]["users"]) as $user){
                             print_r($user." ");
                         }
                     print_r("<br>");
+                    }
                 }
             ?>
         </div>

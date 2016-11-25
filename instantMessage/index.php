@@ -47,55 +47,7 @@ else {
             </p>
             <div style="clear: both"></div>
         </div>
-        <div id="chatbox"><?php
-            $grp = $groups[$grpid];
-            $msgs = $grp["msgs"];
-
-            foreach ($msgs as $msg)
-            {
-
-                $user = $msg["user"];
-                $time = $msg["time"];
-
-                switch ($msg["type"])
-                {
-                    case "user_join":
-                    echo "
-                    <div class='msgln'>
-                        <span class='msgln'>($time)</span>
-                        <i>User <b>$user</b> has joined the chat session.</i>
-                    </div>
-                    <br>
-                    ";
-                    break;
-
-                    case "user_leave":
-                    echo "
-                    <div class='msgln'>
-                        <span class='msgln'>($time)</span>
-                        <i>User <b>$user</b> has left the chat session.</i>
-                    </div>
-                    <br>
-                    ";
-                    break;
-
-                    case "user_say":
-                    echo "
-                    <div>
-                        <span class='msgln'>($time)</span>
-                        <b>$user</b>:".$msg['msg']."
-                    </div>
-                    <br>
-                    ";
-                    break;
-                }
-
-            }
-
-
-        ?>
-            
-        </div>
+        <div id="chatbox"> </div>
 
         <input name="usermsg" type="text" id="usermsg" size="63" autocomplete="off" /> 
         <input type="hidden" name="type" value="user_say" />
@@ -126,25 +78,72 @@ else {
             return false;
         });
 
+        var msg_no = 0;
         function loadLog(){
             var oldscrollHeight = $("#chatbox").attr("scrollHeight") - 20; //Scroll height before the request
+            console.log(msg_no);
             $.ajax({
-                url: "groups.json",
-                dataType: "json",
-                success: function(data){
+                method: "POST",
+                url: "checkMessage.php",
+                data: {"msg_no": msg_no},
+                success: function(data)
+                {
                     console.log(data);
-                    // $("#chatbox").html(html); //Insert chat log into the #chatbox div
+                    data = JSON.parse(data);
+                    msgs = data.msgs;
+                    console.log(msgs);
 
-                //Auto-scroll
-                var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20; //Scroll height after the request
+                    var html;
+                    for (i = 0; i < msgs.length && msg_no < data.msg_no; ++i, msg_no++)
+                    {
+                        msg = msgs[i];
+                        switch (msg.type)
+                        {
+                            case "user_join":
+                            html = `
+                            <div class='msgln'>
+                                <span class='msgln'>(`+msg.time+`)</span>
+                                <i>User <b>`+msg.user+`</b> has joined the chat session.</i>
+                            </div>
+                            <br>
+                            `;
+                            break;
+
+                            case "user_leave":
+                            html = `
+                            <div class='msgln'> <span class='msgln'>(`+msg.time+`)</span>
+                                <i>User <b>`+msg.user+`</b> has left the chat session.</i>
+                            </div>
+                            <br>
+                            `;
+                            break;
+
+                            case "user_say":
+                            html = `
+                            <div>
+                                <span class='msgln'>(`+msg.time+`)</span>
+                                <b>`+msg.user+`</b>: `+msg.msg+`
+                            </div>
+                            <br>
+                            `;
+                            break;
+                        }
+
+                        $("#chatbox").append(html);
+                    }
+
+                    //Auto-scroll
+                    var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20; 
+                    //Scroll height after the request
                     if(newscrollHeight > oldscrollHeight){
                         $("#chatbox").animate({ scrollTop: newscrollHeight }, 'normal'); //Autoscroll to bottom of div
                     }
+                    setTimeout(loadLog, 1000);
                 },
             });
         }
+        loadLog();
 
-        setInterval (loadLog, 1000);
     </script>
     <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>

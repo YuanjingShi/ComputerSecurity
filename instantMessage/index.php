@@ -1,31 +1,27 @@
 <?php
 session_start ();
+$username = $_SESSION["username"];
 if (isset ( $_GET ['logout'] )) {
 
     // Simple exit message
     $fp = fopen ( "log.html", 'a' );
-    fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has left the chat session.</i><br></div>" );
+    fwrite ( $fp, "<div class='msgln'><i>User " . $username . " has left the chat session.</i><br></div>" );
     fclose ( $fp );
 
     session_destroy ();
     header ( "Location: login.php" ); // Redirect the user
 }
 
-if (isset($_POST["targetUser"]))
+if (isset($_SESSION["grpid"]))
 {
-    echo "targetUser: ".$_POST["targetUser"];
-    $targetUser = $_POST["targetUser"];
-    if (file_exists("log.json"))
-    $data = json_decode(file_get_contents("log.json"), true);
+    $grpid=$_SESSION["grpid"];
+    $targetGroup = $_POST["targetGroup"];
 
-    if (!$data) echo "internal error"; // server parse error
-    $groups = $data["groups"];
+    $groups = json_decode(file_get_contents("groups.json"), true);
+    if (!$groups) die("Internal error"); // server parse error
 
-    foreach ($groups as $group)
-    {
-        print_r($group);
-
-    }
+    if (!array_key_exists($grpid, $groups) || !in_array($username, $groups[$grpid]["users"]))
+        header("Location: login.php"); // user not in group or group not exists
 
 }
 else {
@@ -44,27 +40,18 @@ else {
 <div id="wrapper">
         <div id="menu">
             <p class="welcome">
-                Welcome, <b><?php echo $_SESSION['name']; ?></b>
+                Welcome, <b><?php echo $username; ?></b>
             </p>
             <p class="logout">
                 <a id="exit" href="#">Exit Chat</a>
             </p>
             <div style="clear: both"></div>
         </div>
-        <div id="chatbox"><?php
-        if (file_exists ( "log.html" ) && filesize ( "log.html" ) > 0) {
-            $handle = fopen ( "log.html", "r" );
-            $contents = fread ( $handle, filesize ( "log.html" ) );
-            fclose ( $handle );
+        <div id="chatbox"> </div>
 
-            echo $contents;
-        }
-        ?></div>
-
-        <form name="message" action="">
-            <input name="usermsg" type="text" id="usermsg" size="63" /> <input
-                name="submitmsg" type="submit" id="submitmsg" value="Send" />
-        </form>
+        <input name="usermsg" type="text" id="usermsg" size="63" autocomplete="off" /> 
+        <input type="hidden" name="type" value="user_say" />
+        <button name="submitmsg" id="submitmsg" >Send</button>
     </div>
     <div id="map" style="width:400px;height:400px;"></div>
     <script type="text/javascript"
@@ -85,31 +72,93 @@ else {
 
         //If user submits the form
         $("#submitmsg").click(function(){
-                var clientmsg = $("#usermsg").val();
-                $.post("post.php", {text: clientmsg});
-                $("#usermsg").attr("value", "");
-                loadLog;
-                return false;
-            });
+            var clientmsg = $("#usermsg").val();
+            $.post("post.php", {text: clientmsg});
+            $("#usermsg").attr("value", "");
+            return false;
+        });
 
+        var msg_no = 0;
         function loadLog(){
             var oldscrollHeight = $("#chatbox").attr("scrollHeight") - 20; //Scroll height before the request
+            console.log(msg_no);
             $.ajax({
-                url: "log.html",
-                cache: false,
-                success: function(html){
-                    $("#chatbox").html(html); //Insert chat log into the #chatbox div
+                type: "POST",
+                url: "checkMessage.php",
+                data: {"msg_no": msg_no},
+                success: function(data)
+                {
+                    console.log(data);
+                    data = JSON.parse(data);
+                    msgs = data.msgs;
+                    console.log(msgs);
 
-                //Auto-scroll
-                var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20; //Scroll height after the request
+                    var html;
+                    for (i = 0; i < msgs.length && msg_no < data.msg_no; ++i, msg_no++)
+                    {
+                        msg = msgs[i];
+                        switch (msg.type)
+                        {
+                            case "user_create":      
+                            html = `
+                            <div class='msgln'>
+                                <span class='msgln'>(`+msg.time+`)</span>
+                                <i>User <b>`+msg.user+`</b> created the chat session.</i>
+                            </div>
+                            <br>
+                            `;
+                            html = `
+                            <div class='msgln'>
+                                <span class='msgln'>(`+msg.time+`)</span>
+                                <i>User <b>`+msg.user+`</b> joined the chat session.</i>
+                            </div>
+                            <br>
+                            `;
+                            case "user_join":
+                            html = `
+                            <div class='msgln'>
+                                <span class='msgln'>(`+msg.time+`)</span>
+                                <i>User <b>`+msg.user+`</b> joined the chat session.</i>
+                            </div>
+                            <br>
+                            `;
+                            break;
+
+                            case "user_leave":
+                            html = `
+                            <div class='msgln'> <span class='msgln'>(`+msg.time+`)</span>
+                                <i>User <b>`+msg.user+`</b> left the chat session.</i>
+                            </div>
+                            <br>
+                            `;
+                            break;
+
+                            case "user_say":
+                            html = `
+                            <div>
+                                <span class='msgln'>(`+msg.time+`)</span>
+                                <b>`+msg.user+`</b>: `+msg.msg+`
+                            </div>
+                            <br>
+                            `;
+                            break;
+                        }
+
+                        $("#chatbox").append(html);
+                    }
+
+                    //Auto-scroll
+                    var newscrollHeight = $("#chatbox").attr("scrollHeight") - 20; 
+                    //Scroll height after the request
                     if(newscrollHeight > oldscrollHeight){
                         $("#chatbox").animate({ scrollTop: newscrollHeight }, 'normal'); //Autoscroll to bottom of div
                     }
+                    setTimeout(loadLog, 1000);
                 },
             });
         }
+        loadLog();
 
-        setInterval (loadLog, 1000);
     </script>
     <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>

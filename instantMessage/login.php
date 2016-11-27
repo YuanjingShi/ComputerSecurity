@@ -1,54 +1,37 @@
 <?php
-session_start ();
-$options = [
-  'cost' => 11,
-  //'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
-  ];
-$file = "user.txt";
-$fopen = fopen ( $file, "r");
-
-if ($fopen) {
-    $text = explode("\n", fread($fopen, filesize($file)));
-}
-fclose($fopen);
-$count = count($text);
-$_SESSION['array'] = array();
-$_SESSION['user'] = array();
-for($i=0;$i<$count;$i++){
-    list($user,$pwd) = explode(" ", $text[$i]);
-    $_SESSION['user'][] = $user;
-    $_SESSION['array'][$user] = $pwd;
-}
-//echo in_array(henry,$text,true) ? 'It is here' : 'Sorry it is not';
-//print_r($_SESSION['user']);
-//print_r($_SESSION['array']["henry"]);
-
-
-
 if (isset ( $_POST ['enter'] )) {
-    if ($_POST ['name'] != "" && $_POST ['pwd'] != "") {
-        $_SESSION ['name'] = stripslashes ( htmlspecialchars ( $_POST ['name'] ) );
-        $_SESSION ['pwd'] = stripslashes ( htmlspecialchars ( $_POST ['pwd'] ) );
+    if ($_POST ['username'] != "" && $_POST ['pwd'] != "") {
+        $user_data = json_decode(file_get_contents("user.json"), true);
+        if (!$user_data) die("internal error");
+        $username = stripslashes ( htmlspecialchars ( $_POST ['username'] ) );
+        session_start ();
+        $_SESSION['username'] = $username;
+        $pwd = stripslashes(htmlspecialchars($_POST['pwd']));
+        $_SESSION['pwd'] = $pwd;
         //echo $_POST ['name'];
-        if(in_array($_SESSION ['name'], $_SESSION['user'])){
-            if(password_verify ($_SESSION['pwd'], $_SESSION['array'][$_SESSION['name']])){
-                $fp = fopen ( "log.html", 'a' );
-                fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
-                fclose ( $fp );
-                header("Location: chooseUser.php");
+		if(!isset($_SESSION['wrong_pw_counter']))
+			$_SESSION['wrong_pw_counter'] = 0;
+        if(array_key_exists($username, $user_data)){
+            if(password_verify ($pwd, $user_data[$username]["pwd"])){
+				$_SESSION['username'] = $username;
+				$_SESSION['pwd'] = $pwd;
+                $fp = fopen("log.html", 'a' );
+                fwrite($fp, "<div class='msgln'><i>User " . $username . " has joined the chat session.</i><br></div>" );
+                fclose ($fp);
+                header("Location: chooseGroup.php");
             }else{
                 echo '<span class="error">Your username/password is not correct!</span>';
+				if((++$_SESSION['wrong_pw_counter'])%3==0){
+					echo "<br><span class='error'>3 x wrong password, try again in 15s!</span>";
+					//stay in an idle state for 15 seconds for anti-brute-forcing
+					ob_flush();
+					flush();
+					sleep(15);
+				//removed session_destroy();
+				}
             }
         }else{
-            //echo '<span class="error">User is not registered!</span>';
-            $fp1 = fopen ( $file, 'a' );
-            $temp = password_hash($_SESSION ['pwd'], PASSWORD_BCRYPT, $options);
-            fwrite ($fp1, $_SESSION ['name']." ".$temp."\n");
-            fclose ( $fp1 );
-            $fp = fopen ( "log.html", 'a' );
-            fwrite ( $fp, "<div class='msgln'><i>User " . $_SESSION ['name'] . " has joined the chat session.</i><br></div>" );
-            fclose ( $fp );
-            header("Location: chooseUser.php");
+            echo '<span class="error">User is not registered!</span>';
         }
 
     } else {
@@ -65,12 +48,19 @@ if (isset ( $_POST ['enter'] )) {
         <div id="loginform">
             <form method="post">
                 <p>Please enter your name to continue:</p>
-                <label for="name">User Name:</label>
-                <input type="text" name="name" id="name" />
+                <label for="username">User Name:</label>
+                <input type="text" name="username" id="username" autocomplete="off" />
                 <label for="pwd">Password:</label>
-                <input type="text" name="pwd" id="pwd" />
-                <input type="submit" name="enter" id="enter" value="Enter" />
+                <input type="password" name="pwd" id="pwd" autocomplete="off" />
+                <input type="submit" name="enter" id="enter" value="Enter" autocomplete="off" />
             </form>
         </div>
+		<p>New User? <a href="./register.php">Click here to register!</a></p>
+    </body>
+<<<<<<<<< saved version
+ </html>
+=========
+		<p>New User? <a href="./register.php">Click here to register!</a></p>
     </body>
     </html>
+>>>>>>>>> local version

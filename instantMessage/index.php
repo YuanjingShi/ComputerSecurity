@@ -1,9 +1,12 @@
 <?php
+//To prevetn XSS attack
+ini_set("session.cookie_httponly", 1);
 session_start ();
 $username = $_SESSION["username"];
 if (isset ( $_GET ['logout'] )) {
 
     // Simple exit message
+    // But we should use POST instead
     $fp = fopen ( "log.html", 'a' );
     fwrite ( $fp, "<div class='msgln'><i>User " . $username . " has left the chat session.</i><br></div>" );
     fclose ( $fp );
@@ -42,9 +45,11 @@ else {
             <p class="welcome">
                 Welcome, <b><?php echo $username; ?></b>
             </p>
-            <p class="logout">
+            <form action="index.php" method="post">
+            <button class="logout">
                 <a id="exit" href="#">Exit Chat</a>
-            </p>
+            </button>
+            </form>
             <div style="clear: both"></div>
         </div>
         <div id="chatbox"> </div>
@@ -66,7 +71,8 @@ else {
             //If user wants to end session
             $("#exit").click(function(){
                 var exit = confirm("Are you sure you want to end the session?");
-                if(exit==true){window.location = 'index.php?logout=true';}
+                if(exit==true){window.location = 'index.php?logout=true';
+                }
             });
         });
 

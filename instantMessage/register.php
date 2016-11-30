@@ -20,9 +20,7 @@ if(!empty($_POST)){
 			$fp = fopen("user.json", "w") or die("internal error");
 			fwrite($fp, json_encode($user_data)); // override database
 			fclose($fp);
-			$fp = fopen ( "log.html", 'a' );
-			fwrite ( $fp, "<div class='msgln'><i>User " . $username . " has joined the chat session.</i><br></div>" );
-			fclose ( $fp );
+
 			$msg = "Register successfully!";
 		}
 		else

@@ -11,7 +11,7 @@ if (isset ( $_POST ['logout'] )) {
 if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 {
     $grpid = $_POST["targetGroup"];
-    $groups = json_decode(file_get_contents("groups.json"), true);
+    $groups = json_decode(file_get_contents("data/groups.json"), true);
     if (!$groups) die("Internal error");
 
     $grp = $groups[$grpid];
@@ -27,7 +27,7 @@ if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 }
 
 if (isset ( $_POST ['create'] )) {
-    $groups = json_decode(file_get_contents("groups.json"), true);
+    $groups = json_decode(file_get_contents("data/groups.json"), true);
     if (!$groups) die("internal error");
         
     do{
@@ -52,7 +52,7 @@ if (isset ( $_POST ['create'] )) {
     array_push($groups[$grpid]["msgs"], $msg);
     
     //write the updated group info back to the json
-    $fp = fopen("groups.json", "w") or die("internal error");
+    $fp = fopen("data/groups.json", "w") or die("internal error");
     fwrite($fp, json_encode($groups));
     fclose($fp);
     
@@ -78,7 +78,7 @@ if (isset ( $_POST ['create'] )) {
         </form>
         <div>
             <?php
-                $groups = json_decode(file_get_contents("groups.json"), true);
+                $groups = json_decode(file_get_contents("data/groups.json"), true);
                 if (!$groups) die("Internal error");
                 //print_r($_SESSION["username"]);
                 foreach (array_keys($groups) as $key){

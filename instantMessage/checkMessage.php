@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 
 $grpid = $_SESSION["grpid"];
 $_SESSION["msg_no"] = $_POST["msg_no"];
-$data = json_decode(file_get_contents("groups.json"), true);
+$data = json_decode(file_get_contents("data/groups.json"), true);
 $grp = $data[$grpid];
 
 $msgs = $grp["msgs"]; 

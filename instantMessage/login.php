@@ -4,7 +4,7 @@
 ini_set("session.cookie_httponly", 1);
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['username'] != "" && $_POST ['pwd'] != "") {
-        $user_data = json_decode(file_get_contents("user.json"), true);
+        $user_data = json_decode(file_get_contents("data/user.json"), true);
         if (!$user_data) die("internal error");
         $username = stripslashes ( htmlspecialchars ( $_POST ['username'] ) );
         session_start ();

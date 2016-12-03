@@ -69,29 +69,31 @@ if (isset ( $_POST ['create'] )) {
     </head>   
     <body>
         <form method="post">
-            <label for="targetGroup">Please enter the group ID: </label>
+            <label for="targetGroup">Please choose a group or create a new group: </label>
             <br>
-            <input name="targetGroup" type="text" autocomplete="off" />
-            <button name="chosen" value="chosen" type="submit">Submit</button>
-            <button name="create" value="create" type="submit">Create a Group!</button>
-            <button name="logout" value="logout" type="submit">Log Out!</button>
-        </form>
-        <div>
+            <select name="targetGroup">
             <?php
                 $groups = json_decode(file_get_contents("data/groups.json"), true);
                 if (!$groups) die("Internal error");
                 //print_r($_SESSION["username"]);
                 foreach (array_keys($groups) as $key){
                     if(in_array($_SESSION["username"], $groups[$key]["users"])){
-                        print_r($key." "."got users: "."<br>");
-                        //print the user name in this group
+                        echo "<option value=$key>$key | users: ";
                         foreach (array_values($groups[$key]["users"]) as $user){
-                            print_r($user." ");
+                            echo " $user ";
                         }
-                    print_r("<br>");
+                        echo "</option>";
+                        //print the user name in this group
                     }
                 }
             ?>
+            </select>
+
+            <button name="chosen" value="chosen" type="submit">Enter</button>
+            <button name="create" value="create" type="submit">Create a Group!</button>
+            <button name="logout" value="logout" type="submit">Log Out!</button>
+        </form>
+        <div>
         </div>
     </body>
 </html>

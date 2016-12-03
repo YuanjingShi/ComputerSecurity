@@ -16,7 +16,6 @@ if (isset ( $_POST ['enter'] )) {
         if(array_key_exists($username, $user_data)){
             if(password_verify ($pwd, $user_data[$username]["pwd"])){
                 $_SESSION['username'] = $username;
-                $_SESSION['pwd'] = $pwd;
                 $fp = fopen("log.html", 'a' );
                 fwrite($fp, "<div class='msgln'><i>User " . $username . " has joined the chat session.</i><br></div>" );
                 fclose ($fp);

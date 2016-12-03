@@ -4,7 +4,7 @@ session_start();
 date_default_timezone_set('Asia/Hong_Kong');
 if(isset($_SESSION['username'])){
 
-    $groups = json_decode(file_get_contents("groups.json"), true);
+    $groups = json_decode(file_get_contents("data/groups.json"), true);
     if (!$groups) die("internal error");
 
     $text = $_POST["text"];
@@ -15,7 +15,7 @@ if(isset($_SESSION['username'])){
     $msg["type"] = "user_say";
     array_push($groups[$_SESSION["grpid"]]["msgs"], $msg);
 
-    $fp = fopen("groups.json", "w") or die("internal error");
+    $fp = fopen("data/groups.json", "w") or die("internal error");
     fwrite($fp, json_encode($groups));
     fclose($fp);
 }

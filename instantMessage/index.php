@@ -5,12 +5,6 @@ session_start ();
 $username = $_SESSION["username"];
 if (isset ( $_GET ['logout'] )) {
 
-    // Simple exit message
-    // But we should use POST instead
-    $fp = fopen ( "log.html", 'a' );
-    fwrite ( $fp, "<div class='msgln'><i>User " . $username . " has left the chat session.</i><br></div>" );
-    fclose ( $fp );
-
     session_destroy ();
     header ( "Location: login.php" ); // Redirect the user
 }

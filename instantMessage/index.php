@@ -53,7 +53,6 @@ else {
         <input type="hidden" name="type" value="user_say" />
         <button name="submitmsg" id="submitmsg" >Send</button>
     </div>
-    <div id="map" style="width:400px;height:400px;"></div>
     <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
     <script type="text/javascript">

@@ -102,10 +102,10 @@ else {
                 data: {"msg_no": msg_no},
                 success: function(data)
                 {
-                    console.log(data);
+                    //console.log(data);
                     data = JSON.parse(data);
                     msgs = data.msgs;
-                    console.log(msgs);
+                    //console.log(msgs);
 
                     var html;
                     for (i = 0; i < msgs.length && msg_no < data.msg_no; ++i, msg_no++)

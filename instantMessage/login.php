@@ -1,5 +1,5 @@
 <?php
-//To prevetn XSS attack
+//To prevent XSS attack
 ini_set("session.cookie_httponly", 1);
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['username'] != "" && $_POST ['pwd'] != "") {
@@ -11,8 +11,8 @@ if (isset ( $_POST ['enter'] )) {
         $pwd = stripslashes(htmlspecialchars($_POST['pwd']));
         $_SESSION['pwd'] = $pwd;
         //echo $_POST ['name'];
-		if(!isset($_SESSION['wrong_pw_counter']))
-			$_SESSION['wrong_pw_counter'] = 0;
+        if(!isset($_SESSION['wrong_pw_counter']))
+            $_SESSION['wrong_pw_counter'] = 0;
         if(array_key_exists($username, $user_data)){
             if(password_verify ($pwd, $user_data[$username]["pwd"])){
 				$_SESSION['username'] = $username;
@@ -54,6 +54,6 @@ if (isset ( $_POST ['enter'] )) {
                 <input type="submit" name="enter" id="enter" value="Enter" autocomplete="off" />
             </form>
         </div>
-		<p>New User? <a href="./register.php">Click here to register!</a></p>
+        <p>New User? <a href="./register.php">Click here to register!</a></p>
     </body>
  </html>

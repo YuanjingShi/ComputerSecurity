@@ -1,9 +1,12 @@
 <?php
+//To prevetn XSS attack
+ini_set("session.cookie_httponly", 1);
 session_start ();
 $username = $_SESSION["username"];
 if (isset ( $_GET ['logout'] )) {
 
     // Simple exit message
+    // But we should use POST instead
     $fp = fopen ( "log.html", 'a' );
     fwrite ( $fp, "<div class='msgln'><i>User " . $username . " has left the chat session.</i><br></div>" );
     fclose ( $fp );
@@ -17,7 +20,7 @@ if (isset($_SESSION["grpid"]))
     $grpid=$_SESSION["grpid"];
     $targetGroup = $_POST["targetGroup"];
 
-    $groups = json_decode(file_get_contents("groups.json"), true);
+    $groups = json_decode(file_get_contents("data/groups.json"), true);
     if (!$groups) die("Internal error"); // server parse error
 
     if (!array_key_exists($grpid, $groups) || !in_array($username, $groups[$grpid]["users"]))
@@ -27,6 +30,24 @@ if (isset($_SESSION["grpid"]))
 else {
     session_destroy();
     header("Location: login.php");
+}
+
+if (isset($_POST["invite"]))
+{
+    $grpid = $_POST["targetGroup"];
+    $groups = json_decode(file_get_contents("data/groups.json"), true);
+    if (!$groups) die("Internal error");
+
+    $grp = $groups[$grpid];
+    if (!array_key_exists($grpid, $groups) || !in_array($_SESSION["username"], $grp["users"])) 
+    {
+        echo "<span class='error'>The group does not exist,<br> or you are not in the group</span>";
+    }
+    else 
+    {
+        $_SESSION["grpid"] = $grpid;
+        header("Location: index.php");
+    }
 }
 
 ?>
@@ -42,9 +63,12 @@ else {
             <p class="welcome">
                 Welcome, <b><?php echo $username; ?></b>
             </p>
-            <p class="logout">
+            <form method="post">
+            <button class="logout">
                 <a id="exit" href="#">Exit Chat</a>
-            </p>
+            </button>
+            <button name="invite" value="invite" type="submit">Invite!</button>
+            </form>
             <div style="clear: both"></div>
         </div>
         <div id="chatbox"> </div>
@@ -66,7 +90,8 @@ else {
             //If user wants to end session
             $("#exit").click(function(){
                 var exit = confirm("Are you sure you want to end the session?");
-                if(exit==true){window.location = 'index.php?logout=true';}
+                if(exit==true){window.location = 'index.php?logout=true';
+                }
             });
         });
 

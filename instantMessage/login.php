@@ -1,7 +1,10 @@
+
 <?php
+//To prevetn XSS attack
+ini_set("session.cookie_httponly", 1);
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['username'] != "" && $_POST ['pwd'] != "") {
-        $user_data = json_decode(file_get_contents("user.json"), true);
+        $user_data = json_decode(file_get_contents("data/user.json"), true);
         if (!$user_data) die("internal error");
         $username = stripslashes ( htmlspecialchars ( $_POST ['username'] ) );
         session_start ();
@@ -22,7 +25,7 @@ if (isset ( $_POST ['enter'] )) {
             }else{
                 echo '<span class="error">Your username/password is not correct!</span>';
 				if((++$_SESSION['wrong_pw_counter'])%3==0){
-					echo "<br><span class='error'>3 x wrong password, try again in 15s!</span>";
+					echo "<br><span class='error'>3 x wrong password, try again after 15s!</span>";
 					//stay in an idle state for 15 seconds for anti-brute-forcing
 					ob_flush();
 					flush();
@@ -57,10 +60,4 @@ if (isset ( $_POST ['enter'] )) {
         </div>
 		<p>New User? <a href="./register.php">Click here to register!</a></p>
     </body>
-<<<<<<<<< saved version
  </html>
-=========
-		<p>New User? <a href="./register.php">Click here to register!</a></p>
-    </body>
-    </html>
->>>>>>>>> local version

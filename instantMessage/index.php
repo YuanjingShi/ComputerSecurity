@@ -15,8 +15,7 @@ if (isset ( $_GET ['logout'] )) {
     header ( "Location: login.php" ); // Redirect the user
 }
 
-if (isset($_SESSION["grpid"]))
-{
+if (isset($_SESSION["grpid"])) {
     $grpid=$_SESSION["grpid"];
     $targetGroup = $_POST["targetGroup"];
 
@@ -25,29 +24,22 @@ if (isset($_SESSION["grpid"]))
 
     if (!array_key_exists($grpid, $groups) || !in_array($username, $groups[$grpid]["users"]))
         header("Location: login.php"); // user not in group or group not exists
-
+        
+    if (isset($_SESSION["addResult"])) {
+        $addResult = $_SESSION["addResult"];
+        if ($addResult==0)
+            $addResult = "User added Successfully";
+        else if ($addResult==1)
+            $addResult = "User is already in the group";
+        else if ($addResult==2)
+            $addResult = "User does not exist";
+    }
+    else
+        $addResult = "";
 }
 else {
     session_destroy();
     header("Location: login.php");
-}
-
-if (isset($_POST["invite"]))
-{
-    $grpid = $_POST["targetGroup"];
-    $groups = json_decode(file_get_contents("data/groups.json"), true);
-    if (!$groups) die("Internal error");
-
-    $grp = $groups[$grpid];
-    if (!array_key_exists($grpid, $groups) || !in_array($_SESSION["username"], $grp["users"])) 
-    {
-        echo "<span class='error'>The group does not exist,<br> or you are not in the group</span>";
-    }
-    else 
-    {
-        $_SESSION["grpid"] = $grpid;
-        header("Location: index.php");
-    }
 }
 
 ?>
@@ -63,12 +55,14 @@ if (isset($_POST["invite"]))
             <p class="welcome">
                 Welcome, <b><?php echo $username; ?></b>
             </p>
-            <form method="post">
             <button class="logout">
                 <a id="exit" href="#">Exit Chat</a>
             </button>
-            <button name="invite" value="invite" type="submit">Invite!</button>
+            <form action="addUserToGroup.php" method="post">
+                <input id="invite" type="submit" value="Invite!"/>
+                <input id="inviteUser" type="text" name="inviteUser" value="" style="display:none"/>
             </form>
+            <p id="addResult" style="color: red"><?php echo $addResult; ?></p>
             <div style="clear: both"></div>
         </div>
         <div id="chatbox"> </div>
@@ -80,10 +74,6 @@ if (isset($_POST["invite"]))
     <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
     <script type="text/javascript">
-        // jQuery Document
-        $(document).ready(function(){
-        });
-
         //jQuery Document
         $(document).ready(function(){
             //If user wants to end session
@@ -181,6 +171,13 @@ if (isset($_POST["invite"]))
                 },
             });
         }
+        
+        $("#invite").click(function invite() {
+            var id = $("#inviteUser");
+            id.val(prompt("Who do you wish to invite?", "Input user ID here"));
+            return true;
+        });
+        
         loadLog();
 
     </script>

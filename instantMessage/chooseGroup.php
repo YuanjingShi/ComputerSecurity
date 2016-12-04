@@ -66,6 +66,7 @@ if (isset ( $_POST ['create'] )) {
 <html>
     <head>
         <link rel="stylesheet" href="style.css" media="screen">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
     </head>   
     <body>
         <form method="post">
@@ -92,8 +93,41 @@ if (isset ( $_POST ['create'] )) {
             <button name="chosen" value="chosen" type="submit">Enter</button>
             <button name="create" value="create" type="submit">Create a Group!</button>
             <button name="logout" value="logout" type="submit">Log Out!</button>
+            <br/>
+            <br/>
         </form>
-        <div>
+        <button id="openBtn">Change Password</button>
+        <div id="changeDiv" style="display:none">
+            <label for="currentPassword">Your current password:</label>
+            <input id="cp1" type="password" name="currentPassword" /><br/>
+            <label for="newPassword">Input new password:</label>
+            <input id="cp2" type="password" name="newPassword" /><br/>
+            <label for="newPassword2">Input new password again:</label>
+            <input id="cp3" type="password" name="newPassword2" /><br/>
+            <p id="changePasswordPrompt" style="color:red"></p>
+            <button id="submitBtn">Submit</button>
         </div>
     </body>
+    <script type="text/javascript">
+        $("#openBtn").click(function() {
+            $("#changeDiv").attr("style", "display:block");
+            $("#openBtn").attr("disabled", true);
+        });
+        
+        $("#submitBtn").click(function() {
+            var cp1 = $("#cp1").val();
+            var cp2 = $("#cp2").val();
+            var cp3 = $("#cp3").val();
+            var prompt = $("#changePasswordPrompt");
+            if (cp1=="" || cp2=="" || cp3=="") {
+                prompt.html("Please input each field");
+                return;
+            }
+            $.post("changePassword.php",
+            {currentPassword: cp1, newPassword: cp2, newPassword2: cp3},
+            function(data, status) {
+                prompt.html(data);
+            });
+        });
+    </script>
 </html>

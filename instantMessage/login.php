@@ -30,7 +30,7 @@ if (isset ( $_POST ['enter'] )) {
 				}
             }
         }else{
-            echo '<span class="error">User is not registered!</span>';
+            echo '<span class="error">User does not exist. Please register first.</span>';
         }
 
     } else {
@@ -47,7 +47,7 @@ if (isset ( $_POST ['enter'] )) {
         <div id="loginform">
             <form method="post">
                 <p>Please enter your name to continue:</p>
-                <label for="username">User Name:</label>
+                <label for="username">Username:</label>
                 <input type="text" name="username" id="username" autocomplete="off" />
                 <label for="pwd">Password:</label>
                 <input type="password" name="pwd" id="pwd" autocomplete="off" />

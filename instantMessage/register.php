@@ -16,7 +16,14 @@ if(!empty($_POST) ){
         $user_data = json_decode(file_get_contents("data/user.json"), true);
         if (!$user_data) die("internal error");
 
-        $username = stripslashes ( htmlspecialchars ( $_POST ['username'] ) );
+        $username = $_POST["username"];
+        if (!preg_match("/^[a-zA-Z0-9_]{1,20}$/", $username))
+        {
+            $msg = "Your username should contain alphanumeric characters and underscores only and should not exceed 20 characters.";
+            break;
+
+        }
+
         if(array_key_exists($username, $user_data))
         {
             $msg = "User already exists!";
@@ -24,7 +31,14 @@ if(!empty($_POST) ){
         }
         if($_POST["pwd_1"]==$_POST["pwd_2"])
         {
-            $temp = password_hash($_POST["pwd_1"], PASSWORD_BCRYPT, $options);
+            $pwd = $_POST["pwd_1"];
+            if (!preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/", $pwd))
+            {
+                $msg = "Your password should contain at least 1 upper case letter, 1 lower case letter and 1 number, and should be 8-20 characters long";
+                break;
+            }
+
+            $temp = password_hash($pwd, PASSWORD_BCRYPT, $options);
             $new_user = array();
             $new_user["pwd"] = $temp;   
             $user_data[$username] = $new_user; 
@@ -33,7 +47,7 @@ if(!empty($_POST) ){
             fwrite($fp, json_encode($user_data)); // override database
             fclose($fp);
 
-            $msg = "Register successfully!";
+            $msg = "Registered successfully!";
         }
         else $msg = "Passwords do not match!";
     } while(0);
@@ -60,7 +74,7 @@ if(!empty($_POST) ){
                 <input style="display:none"/>
                 <input type="password" style="display:none"/>
                 <p>Please enter your information:</p>
-                <label for="username">User Name:</label><br>
+                <label for="username">Username:</label><br>
                 <input type="text" name="username" id="username" autocomplete="off" required="required" /><br>
                 <label for="pwd_1">Password:</label><br>
                 <input type="password" name="pwd_1" id="pwd_1" autocomplete="off" required="required" /><br>

@@ -52,6 +52,7 @@ if (isset ( $_POST ['enter'] )) {
                 <label for="pwd">Password:</label>
                 <input type="password" name="pwd" id="pwd" autocomplete="off" />
                 <input type="submit" name="enter" id="enter" value="Enter" autocomplete="off" />
+                <div class="g-recaptcha" data-sitekey="6LeOyg0UAAAAAEw4kJ5g5fSL5prtXEkzk-R-rxBw"></div>
             </form>
         </div>
         <p>New User? <a href="./register.php">Click here to register!</a></p>

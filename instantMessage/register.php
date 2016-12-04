@@ -66,7 +66,7 @@ if(!empty($_POST) ){
                 <input type="password" name="pwd_1" id="pwd_1" autocomplete="off" required="required" /><br>
 				<label for="pwd_2">Confirm password:</label><br>
                 <input type="password" name="pwd_2" id="pwd_2" autocomplete="off" required="required" /><br><br>
-                <div class="g-recaptcha" id="captcha" data-sitekey="6LeOyg0UAAAAAEw4kJ5g5fSL5prtXEkzk-R-rxBw"></div>
+                <div style="width: 60%; margin: 0 auto;" class="g-recaptcha" id="captcha" data-sitekey="6LeOyg0UAAAAAEw4kJ5g5fSL5prtXEkzk-R-rxBw"></div>
                 <input type="submit" name="register" id="register" value="Register" autocomplete="off" />
             </form>
         </div>

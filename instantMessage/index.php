@@ -2,6 +2,7 @@
 //To prevetn XSS attack
 ini_set("session.cookie_httponly", 1);
 session_start ();
+include_once("encrypt.php");
 $username = $_SESSION["username"];
 if (isset ( $_GET ['logout'] )) {
 
@@ -11,10 +12,9 @@ if (isset ( $_GET ['logout'] )) {
 
 if (isset($_SESSION["grpid"])) {
     $grpid=$_SESSION["grpid"];
-    $targetGroup = $_POST["targetGroup"];
 
-    $groups = json_decode(file_get_contents("data/groups.json"), true);
-    if (!$groups) die("Internal error"); // server parse error
+    $groups = loadGroups();
+    if (!$groups) die("Internal error!"); // server parse error
 
     if (!array_key_exists($grpid, $groups) || !in_array($username, $groups[$grpid]["users"]))
         header("Location: login.php"); // user not in group or group not exists

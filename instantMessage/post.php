@@ -1,10 +1,11 @@
 <?php
 ini_set("session.cookie_httponly", 1);
 session_start();
+include_once("encrypt.php");
 date_default_timezone_set('Asia/Hong_Kong');
 if(isset($_SESSION['username'])){
 
-    $groups = json_decode(file_get_contents("data/groups.json"), true);
+    $groups = loadGroups();
     if (!$groups) die("internal error");
 
     $text = $_POST["text"];
@@ -15,8 +16,6 @@ if(isset($_SESSION['username'])){
     $msg["type"] = "user_say";
     array_push($groups[$_SESSION["grpid"]]["msgs"], $msg);
 
-    $fp = fopen("data/groups.json", "w") or die("internal error");
-    fwrite($fp, json_encode($groups));
-    fclose($fp);
+    saveGroups($groups);
 }
 ?>

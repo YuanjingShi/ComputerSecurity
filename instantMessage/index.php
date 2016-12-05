@@ -67,8 +67,13 @@ else {
     </div>
     <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+	<script type="text/javascript"
+        src="http://travistidwell.com/jsencrypt/bin/jsencrypt.js"></script>
     <script type="text/javascript">
         //jQuery Document
+		var sKeySize = 512;
+		var keySize = parseInt(sKeySize);
+		var crypt = new JSEncrypt({default_key_size: keySize});
         $(document).ready(function(){
             //If user wants to end session
             $("#exit").click(function(){
@@ -81,6 +86,7 @@ else {
         //If user submits the form
         $("#submitmsg").click(function(){
             var clientmsg = $("#usermsg").val();
+			clientmsg = crypt.encrypt(clientmsg);
             $.post("post.php", {text: clientmsg});
             $("#usermsg").attr("value", "");
             return false;
@@ -100,6 +106,7 @@ else {
                     data = JSON.parse(data);
                     msgs = data.msgs;
                     //console.log(msgs);
+
 
                     var html;
                     for (i = 0; i < msgs.length && msg_no < data.msg_no; ++i, msg_no++)
@@ -145,7 +152,7 @@ else {
                             html = `
                             <div>
                                 <span class='msgln'>(`+msg.time+`)</span>
-                                <b>`+msg.user+`</b>: `+msg.msg+`
+								<b>`+msg.user+`</b>: `+crypt.decrypt(msg.msg)+`
                             </div>
                             <br>
                             `;

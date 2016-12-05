@@ -8,6 +8,7 @@ include_once("encrypt.php");
 $grpid = $_SESSION["grpid"];
 $_SESSION["msg_no"] = $_POST["msg_no"];
 $data = loadGroups();
+
 $grp = $data[$grpid];
 
 $msgs = $grp["msgs"]; 

@@ -7,6 +7,7 @@ if($_SERVER["HTTPS"] != "on")
     header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
     exit();
 }
+include_once("encrypt.php");
 date_default_timezone_set('Asia/Hong_Kong');
 if (isset ( $_POST ['logout'] )) {
     session_destroy();
@@ -16,7 +17,7 @@ if (isset ( $_POST ['logout'] )) {
 if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 {
     $grpid = $_POST["targetGroup"];
-    $groups = json_decode(file_get_contents("data/groups.json"), true);
+    $groups = loadGroups();
     if (!$groups) die("Internal error");
 
     $grp = $groups[$grpid];
@@ -32,7 +33,7 @@ if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 }
 
 if (isset ( $_POST ['create'] )) {
-    $groups = json_decode(file_get_contents("data/groups.json"), true);
+    $groups = loadGroups();
     if (!$groups) die("internal error");
         
     do{
@@ -56,10 +57,7 @@ if (isset ( $_POST ['create'] )) {
     $msg["type"] = "user_create";
     array_push($groups[$grpid]["msgs"], $msg);
     
-    //write the updated group info back to the json
-    $fp = fopen("data/groups.json", "w") or die("internal error");
-    fwrite($fp, json_encode($groups));
-    fclose($fp);
+    saveGroups($groups);
     
     header("Location: index.php");
 }
@@ -79,7 +77,7 @@ if (isset ( $_POST ['create'] )) {
             <br>
             <select name="targetGroup">
             <?php
-                $groups = json_decode(file_get_contents("data/groups.json"), true);
+                $groups = loadGroups();
                 if (!$groups) die("Internal error");
                 //print_r($_SESSION["username"]);
                 foreach (array_keys($groups) as $key){

@@ -39,7 +39,7 @@ if(!empty($_POST) ){
             $pwd = $_POST["pwd_1"];
             if (!preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/", $pwd))
             {
-                $msg = "Your password should contain at least 1 upper case letter, 1 lower case letter and 1 number, and should be 8-20 characters long";
+                $msg = "Your password should contain at least 1 uppercase letter, 1 lowercase letter and 1 number, and should be 8-20 characters long";
                 break;
             }
 

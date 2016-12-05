@@ -1,28 +1,35 @@
 <?php
+//To prevetn XSS attack
+ini_set("session.cookie_httponly", 1);
 session_start ();
 $username = $_SESSION["username"];
 if (isset ( $_GET ['logout'] )) {
-
-    // Simple exit message
-    $fp = fopen ( "log.html", 'a' );
-    fwrite ( $fp, "<div class='msgln'><i>User " . $username . " has left the chat session.</i><br></div>" );
-    fclose ( $fp );
 
     session_destroy ();
     header ( "Location: login.php" ); // Redirect the user
 }
 
-if (isset($_SESSION["grpid"]))
-{
+if (isset($_SESSION["grpid"])) {
     $grpid=$_SESSION["grpid"];
     $targetGroup = $_POST["targetGroup"];
 
-    $groups = json_decode(file_get_contents("groups.json"), true);
+    $groups = json_decode(file_get_contents("data/groups.json"), true);
     if (!$groups) die("Internal error"); // server parse error
 
     if (!array_key_exists($grpid, $groups) || !in_array($username, $groups[$grpid]["users"]))
         header("Location: login.php"); // user not in group or group not exists
-
+        
+    if (isset($_SESSION["addResult"])) {
+        $addResult = $_SESSION["addResult"];
+        if ($addResult==0)
+            $addResult = "User added Successfully";
+        else if ($addResult==1)
+            $addResult = "User is already in the group";
+        else if ($addResult==2)
+            $addResult = "User does not exist";
+    }
+    else
+        $addResult = "";
 }
 else {
     session_destroy();
@@ -42,9 +49,14 @@ else {
             <p class="welcome">
                 Welcome, <b><?php echo $username; ?></b>
             </p>
-            <p class="logout">
+            <button class="logout">
                 <a id="exit" href="#">Exit Chat</a>
-            </p>
+            </button>
+            <form action="addUserToGroup.php" method="post">
+                <input id="invite" type="submit" value="Invite!"/>
+                <input id="inviteUser" type="text" name="inviteUser" value="" style="display:none"/>
+            </form>
+            <p id="addResult" style="color: red"><?php echo $addResult; ?></p>
             <div style="clear: both"></div>
         </div>
         <div id="chatbox"> </div>
@@ -53,20 +65,16 @@ else {
         <input type="hidden" name="type" value="user_say" />
         <button name="submitmsg" id="submitmsg" >Send</button>
     </div>
-    <div id="map" style="width:400px;height:400px;"></div>
     <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
     <script type="text/javascript">
-        // jQuery Document
-        $(document).ready(function(){
-        });
-
         //jQuery Document
         $(document).ready(function(){
             //If user wants to end session
             $("#exit").click(function(){
                 var exit = confirm("Are you sure you want to end the session?");
-                if(exit==true){window.location = 'index.php?logout=true';}
+                if(exit==true){window.location = 'index.php?logout=true';
+                }
             });
         });
 
@@ -88,10 +96,17 @@ else {
                 data: {"msg_no": msg_no},
                 success: function(data)
                 {
+<<<<<<< HEAD
                     console.log(data);
                     data = JSON.parse(data);
                     msgs = data.msgs;
                     console.log(msgs);
+=======
+                    //console.log(data);
+                    data = JSON.parse(data);
+                    msgs = data.msgs;
+                    //console.log(msgs);
+>>>>>>> 5cbea2a38b6a4a76d4c7b31b2f01c86ef9638bc6
 
                     var html;
                     for (i = 0; i < msgs.length && msg_no < data.msg_no; ++i, msg_no++)
@@ -157,6 +172,16 @@ else {
                 },
             });
         }
+<<<<<<< HEAD
+=======
+        
+        $("#invite").click(function invite() {
+            var id = $("#inviteUser");
+            id.val(prompt("Who do you wish to invite?", "Input user ID here"));
+            return true;
+        });
+        
+>>>>>>> 5cbea2a38b6a4a76d4c7b31b2f01c86ef9638bc6
         loadLog();
 
     </script>

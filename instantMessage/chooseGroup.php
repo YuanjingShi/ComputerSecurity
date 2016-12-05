@@ -27,11 +27,7 @@ if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 }
 
 if (isset ( $_POST ['create'] )) {
-<<<<<<< HEAD
-    $groups = json_decode(file_get_contents("groups.json"), true);
-=======
     $groups = json_decode(file_get_contents("data/groups.json"), true);
->>>>>>> 5cbea2a38b6a4a76d4c7b31b2f01c86ef9638bc6
     if (!$groups) die("internal error");
         
     do{
@@ -56,11 +52,7 @@ if (isset ( $_POST ['create'] )) {
     array_push($groups[$grpid]["msgs"], $msg);
     
     //write the updated group info back to the json
-<<<<<<< HEAD
-    $fp = fopen("groups.json", "w") or die("internal error");
-=======
     $fp = fopen("data/groups.json", "w") or die("internal error");
->>>>>>> 5cbea2a38b6a4a76d4c7b31b2f01c86ef9638bc6
     fwrite($fp, json_encode($groups));
     fclose($fp);
     
@@ -80,27 +72,6 @@ if (isset ( $_POST ['create'] )) {
         <form method="post">
             <label for="targetGroup">Please choose a group or create a new group: </label>
             <br>
-            <input name="targetGroup" type="text" autocomplete="off" />
-            <button name="chosen" value="chosen" type="submit">Submit</button>
-            <button name="create" value="create" type="submit">Create a Group!</button>
-            <button name="logout" value="logout" type="submit">Log Out!</button>
-        </form>
-        <div>
-            <?php
-                $groups = json_decode(file_get_contents("groups.json"), true);
-                if (!$groups) die("Internal error");
-                //print_r($_SESSION["username"]);
-                foreach (array_keys($groups) as $key){
-                    if(in_array($_SESSION["username"], $groups[$key]["users"])){
-                        print_r($key." "."got users: "."<br>");
-                        //print the user name in this group
-                        foreach (array_values($groups[$key]["users"]) as $user){
-                            print_r($user." ");
-                        }
-                    print_r("<br>");
-                    }
-                }
-            ?>
             <select name="targetGroup">
             <?php
                 $groups = json_decode(file_get_contents("data/groups.json"), true);

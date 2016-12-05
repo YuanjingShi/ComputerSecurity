@@ -113,6 +113,7 @@ else {
                     msgs = data.msgs;
                     //console.log(msgs);
 
+
                     var html;
                     for (i = 0; i < msgs.length && msg_no < data.msg_no; ++i, msg_no++)
                     {
@@ -157,7 +158,7 @@ else {
                             html = `
                             <div>
                                 <span class='msgln'>(`+msg.time+`)</span>
-                                <b>`+msg.user+`</b>: `+msg.msg+`
+								<b>`+msg.user+`</b>: `+msg.msg+`
                             </div>
                             <br>
                             `;

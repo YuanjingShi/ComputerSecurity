@@ -3,6 +3,11 @@
 ini_set("session.cookie_httponly", 1);
 session_start ();
 $username = $_SESSION["username"];
+if($_SERVER["HTTPS"] != "on")
+{
+    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    exit();
+}
 if (isset ( $_GET ['logout'] )) {
 
     session_destroy ();
@@ -11,7 +16,6 @@ if (isset ( $_GET ['logout'] )) {
 
 if (isset($_SESSION["grpid"])) {
     $grpid=$_SESSION["grpid"];
-    $targetGroup = $_POST["targetGroup"];
 
     $groups = json_decode(file_get_contents("data/groups.json"), true);
     if (!$groups) die("Internal error"); // server parse error
@@ -25,11 +29,11 @@ if (isset($_SESSION["grpid"])) {
             $addResult = "User added Successfully";
         else if ($addResult==1)
             $addResult = "User is already in the group";
-        else if ($addResult==2)
-            $addResult = "User does not exist";
+	else $addResult = "";
     }
     else
         $addResult = "";
+    $users = $groups[$grpid]["users"];
 }
 else {
     session_destroy();
@@ -48,12 +52,22 @@ else {
         <div id="menu">
             <p class="welcome">
                 Welcome, <b><?php echo $username; ?></b>
+		<br>
+		Group ID: <b><?php echo $grpid ?></b>
+		<br>
+		Users: <b><?php 
+			foreach($users as $value)
+			{ 
+				echo "$value | ";
+			}
+		?></b>
+
             </p>
-            <button class="logout">
-                <a id="exit" href="#">Exit Chat</a>
+            <button class="logout" id="exit">
+                <a href="#">Exit Chat</a>
             </button>
             <form action="addUserToGroup.php" method="post">
-                <input id="invite" type="submit" value="Invite!"/>
+                <input id="invite" type="submit" value="Invite a member"/>
                 <input id="inviteUser" type="text" name="inviteUser" value="" style="display:none"/>
             </form>
             <p id="addResult" style="color: red"><?php echo $addResult; ?></p>
@@ -69,13 +83,12 @@ else {
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
     <script type="text/javascript">
         //jQuery Document
-        $(document).ready(function(){
-            //If user wants to end session
-            $("#exit").click(function(){
-                var exit = confirm("Are you sure you want to end the session?");
-                if(exit==true){window.location = 'index.php?logout=true';
-                }
-            });
+    //If user wants to end session
+        $("#exit").click(function(){ 
+            var exit = confirm("Are you sure you want to end the session?");
+	    if(exit==true){
+		window.location = 'index.php?logout=true';
+	    }
         });
 
         //If user submits the form
@@ -96,7 +109,6 @@ else {
                 data: {"msg_no": msg_no},
                 success: function(data)
                 {
-                    //console.log(data);
                     data = JSON.parse(data);
                     msgs = data.msgs;
                     //console.log(msgs);

@@ -1,6 +1,11 @@
 <?php
-//To prevent XSS attack
 ini_set("session.cookie_httponly", 1);
+//To prevent XSS attack
+if($_SERVER["HTTPS"] != "on")
+{
+    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    exit();
+}
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['username'] != "" && $_POST ['pwd'] != "") {
         $user_data = json_decode(file_get_contents("data/user.json"), true);
@@ -41,6 +46,8 @@ if (isset ( $_POST ['enter'] )) {
 <!DOCTYPE html>
 <html>
     <head>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
         <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
     </head>
     <body>

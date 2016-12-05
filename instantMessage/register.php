@@ -4,6 +4,11 @@ $options = [
   //'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
 ];
 $msg = "";
+if($_SERVER["HTTPS"] != "on")
+{
+    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    exit();
+}
 if(!empty($_POST) ){
     do 
     {
@@ -60,12 +65,6 @@ if(!empty($_POST) ){
     <head>
         <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
         <script src='https://www.google.com/recaptcha/api.js'></script>
-        <script>
-            document.getElementById("captcha").onclick = function() 
-            {
-
-            }
-        </script>
     </head>
     <body>
         <div id="loginform">

@@ -1,5 +1,10 @@
 <?php
 ini_set("session.cookie_httponly", 1);
+if($_SERVER["HTTPS"] != "on")
+{
+    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    exit();
+}
 session_start();
 if (!isset($_POST["currentPassword"]) || $_POST["currentPassword"]=="" ||
 !isset($_POST["newPassword"]) || $_POST["newPassword"]=="" ||

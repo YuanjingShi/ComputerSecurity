@@ -1,5 +1,10 @@
 <?php
 //To prevetn XSS attack
+if($_SERVER["HTTPS"] != "on")
+{
+    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    exit();
+}
 ini_set("session.cookie_httponly", 1);
 session_start();
 header("Content-Type: application/json");

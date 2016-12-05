@@ -80,7 +80,6 @@ if (isset ( $_POST ['create'] )) {
         <form method="post">
             <label for="targetGroup">Please choose a group or create a new group: </label>
             <br>
-<<<<<<< HEAD
             <input name="targetGroup" type="text" autocomplete="off" />
             <button name="chosen" value="chosen" type="submit">Submit</button>
             <button name="create" value="create" type="submit">Create a Group!</button>
@@ -102,7 +101,6 @@ if (isset ( $_POST ['create'] )) {
                     }
                 }
             ?>
-=======
             <select name="targetGroup">
             <?php
                 $groups = json_decode(file_get_contents("data/groups.json"), true);
@@ -137,7 +135,6 @@ if (isset ( $_POST ['create'] )) {
             <input id="cp3" type="password" name="newPassword2" /><br/>
             <p id="changePasswordPrompt" style="color:red"></p>
             <button id="submitBtn">Submit</button>
->>>>>>> 5cbea2a38b6a4a76d4c7b31b2f01c86ef9638bc6
         </div>
     </body>
     <script type="text/javascript">

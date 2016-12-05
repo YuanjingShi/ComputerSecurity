@@ -57,10 +57,4 @@ if (isset ( $_POST ['enter'] )) {
         </div>
         <p>New User? <a href="./register.php">Click here to register!</a></p>
     </body>
-<<<<<<<<< saved version
  </html>
-=========
-		<p>New User? <a href="./register.php">Click here to register!</a></p>
-    </body>
-    </html>
->>>>>>>>> local version

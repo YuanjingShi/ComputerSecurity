@@ -18,7 +18,7 @@ if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 {
     $grpid = $_POST["targetGroup"];
     $groups = loadGroups();
-    if (!$groups) die("Internal error");
+    if ($groups === NULL) die("Internal error");
 
     $grp = $groups[$grpid];
     if (!array_key_exists($grpid, $groups) || !in_array($_SESSION["username"], $grp["users"])) 
@@ -34,7 +34,7 @@ if (isset($_POST["chosen"]) && isset($_POST["targetGroup"]))
 
 if (isset ( $_POST ['create'] )) {
     $groups = loadGroups();
-    if (!$groups) die("internal error");
+    if ($groups === NULL) die("internal error");
         
     do{
         $grpid = rand(1000000,9999999);
@@ -78,7 +78,7 @@ if (isset ( $_POST ['create'] )) {
             <select name="targetGroup">
             <?php
                 $groups = loadGroups();
-                if (!$groups) die("Internal error");
+                if ($groups === NULL) die("Internal error");
                 //print_r($_SESSION["username"]);
                 foreach (array_keys($groups) as $key){
                     if(in_array($_SESSION["username"], $groups[$key]["users"])){

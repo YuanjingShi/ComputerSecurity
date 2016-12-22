@@ -19,7 +19,7 @@ if(!empty($_POST) ){
         }
 
         $user_data = json_decode(file_get_contents("data/user.json"), true);
-        if (!$user_data) die("internal error");
+        if ($user_data === NULL) die("internal error");
 
         $username = $_POST["username"];
         if (!preg_match("/^[a-zA-Z0-9_]{1,20}$/", $username))

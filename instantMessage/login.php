@@ -9,7 +9,7 @@ if($_SERVER["HTTPS"] != "on")
 if (isset ( $_POST ['enter'] )) {
     if ($_POST ['username'] != "" && $_POST ['pwd'] != "") {
         $user_data = json_decode(file_get_contents("data/user.json"), true);
-        if (!$user_data) die("internal error");
+        if ($user_data === NULL) die("internal error");
         $username = stripslashes ( htmlspecialchars ( $_POST ['username'] ) );
         session_start ();
         $_SESSION['username'] = $username;

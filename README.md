@@ -1,14 +1,10 @@
-# ComputerSecurity
+# Instant Message Chatting System on Web
 
-2016/17 fall semester By Prof. Allen Au
+This is a instant message system designed by our web project team
 
-Sining Liu
+Main Features:
+1. RSA encryption on user account(username, password, logging)
 
-Yuanjing Shi
+2. ReCaptcha auto robot detection on registrtation
 
-Junxiong Yang
-
-Yi Zhou
-
-to run the program: 
-    start a php server under the folder instantMessage
+3. asdsd

@@ -15,7 +15,7 @@ Main Features:
 
 6. JSON for Database management
 
-Credit also to my groups: Junxiong, Yi and another one I cannot remember his name.
+Credit also to my groupmates: Junxiong, Yi and Sining.
 
 This project is inspired by the requirement of a term project from Subject Computer Security
 
